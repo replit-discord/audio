@@ -9,8 +9,8 @@ import (
 )
 
 /*
-#cgo LDFLAGS: -static -L./lib/opusfile -L./lib/ogg -L./lib -lopusfile -logg -lopus -lm
-#cgo CFLAGS: -I./lib/opusfile/opus -I./lib/ogg -I./lib/opus
+#cgo LDFLAGS: -L./lib -L./lib/ogg -L./lib/opusfile -lopusfile -lm -logg -lopus -lm
+#cgo CFLAGS: -I./lib/opus -I./lib/ogg -I./lib/opusfile/opus
 
 #include <ogg/ogg.h>
 #include <opus.h>

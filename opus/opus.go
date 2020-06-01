@@ -5,7 +5,7 @@
 package opus
 
 /*
-#cgo LDFLAGS: -static -L./lib -lopus -lm
+#cgo LDFLAGS: -L./lib -lopus -lm
 #cgo CFLAGS: -I./lib/opus
 
 #include <opus.h>
