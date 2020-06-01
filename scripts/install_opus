@@ -1,0 +1,141 @@
+#!/bin/bash
+CWD=$(pwd)
+OGG_LIB_DIR="$CWD/opus/lib/ogg"
+OGG_CFLAGS="$CWD/opus/lib/ogg"
+OGG_LIBS="$CWD/opus/lib/ogg"
+OPUSFILE_CFLAGS="$CWD/opus/lib/opusfile"
+OPUSFILE_LIBS="$CWD/opus/lib/opusfile"
+OPUS_CFLAGS="$CWD/opus/lib"
+OPUS_LIBS="$CWD/opus/lib"
+URL_LIB_DIR="$CWD/opus/lib/url"
+OPUS_LIB_DIR="$CWD/opus/lib"
+OPUSFILE_LIB_DIR="$CWD/opus/lib/opusfile"
+# LIBOPUSENC_CFLAGS="$CWD/opus/lib/opusfile"
+# LIBOPUSENC_LIBS="$CWD/opus/lib/opusfile"
+# FLAC_CFLAGS="$CWD/opus/lib/opusfile"
+# FLAC_LIBS="$CWD/opus/lib/opusfile"
+# DEPS_CFLAGS="-I$OPUS_LIB_DIR/opus -I$OGG_LIB_DIR"
+# DEPS_LIBS="-L$OPUS_LIB_DIR -L$OGG_LIB_DIR -lopus -logg"
+URL_DEPS_CFLAGS="-I$URL_LIB_DIR/include"
+URL_DEPS_LIBS="-L$URL_LIB_DIR/lib -lssl -ldl -lcrypto -ldl -pthread"
+OPUS_DOWNLOAD_URL='http://www.mega-nerd.com/SRC/libsamplerate-0.1.9.tar.gz'
+OGG_DOWNLOAD_URL='http://downloads.xiph.org/releases/ogg/libogg-1.3.4.tar.gz'
+OPUSFILE_DOWNLOAD_URL='https://archive.mozilla.org/pub/opus/opusfile-0.9.tar.gz'
+OPENSSL_DOWNLOAD_URL='https://www.openssl.org/source/openssl-1.1.1g.tar.gz'
+LOGS=/tmp/buildlogs.txt
+
+CHECK_AND_EXIT=""
+
+function clear_logs() {
+    if [ -f $LOGS ]; then
+        cat $LOGS
+        echo >>/tmp/null
+    fi
+    echo >>$LOGS
+}
+
+function print_logs() {
+    if [ $? -ne 0 ]; then
+        echo "An error occured, logs are below:"
+        cat $LOGS
+    fi
+    # clear_logs
+}
+
+function print_command() {
+    echo "While running $BASH_COMMAND" >>$LOGS
+}
+
+trap print_command DEBUG
+trap print_logs EXIT
+set -e
+
+echo "Installing OpusFile (Step 1/7): Installing OGG (Step 1/4): Downloading."
+cd /tmp
+wget $OGG_DOWNLOAD_URL -O /tmp/libogg.tar.gz >$LOGS 2>&1
+tar -xf libogg.tar.gz >$LOGS 2>&1
+cd libogg-1.3.4
+echo "Installing OpusFile (Step 1/7): Installing OGG (Step 2/4): Configuring."
+./configure --enable-static \
+    --enable-shared=no \
+    --prefix=$OGG_LIB_DIR \
+    --include=$OGG_LIB_DIR \
+    --libdir=$OGG_LIB_DIR >$LOGS 2>&1
+
+echo "Installing OpusFile (Step 1/7): Installing OGG (Step 3/4): Building."
+make >$LOGS 2>&1
+
+echo "Installing OpusFile (Step 1/7): Installing OGG (Step 4/4): Installing."
+make install >$LOGS 2>&1
+
+echo "Installing OpusFile (Step 2/7): Installing OpenSSL (Step 1/4): Downloading."
+wget $OPENSSL_DOWNLOAD_URL -O /tmp/openssl.tar.gz >$LOGS 2>&1
+tar -xf /tmp/openssl.tar.gz -C /tmp >$LOGS 2>&1
+
+cd /tmp/openssl-1.1.1g
+
+echo "Installing OpusFile (Step 2/7): Installing OpenSSL (Step 2/4): Configuring."
+./config --static \
+    no-shared \
+    --prefix=$URL_LIB_DIR \
+    --openssldir=$URL_LIB_DIR >$LOGS 2>&1
+
+echo "Installing OpusFile (Step 2/7): Installing OpenSSL (Step 3/4): Building.  This may take a few minutes."
+make >$LOGS 2>&1
+
+echo "Installing OpusFile (Step 2/7): Installing OpenSSL (Step 4/4): Installing."
+make install_sw >$LOGS 2>&1
+
+echo "Installing OpusFile (Step 3/7): Installing LibOpus (Step 1/4): Downloading."
+cd /tmp
+
+wget https://archive.mozilla.org/pub/opus/opus-1.3.1.tar.gz -O /tmp/opus.tar.gz >$LOGS 2>&1
+tar -xf /tmp/opus.tar.gz >$LOGS 2>&1
+
+echo "Installing OpusFile (Step 3/7): Installing LibOpus (Step 2/4): Configuring."
+
+cd /tmp/opus-1.3.1
+./configure --enable-static \
+    --enable-shared=no \
+    --prefix=$OPUS_LIB_DIR \
+    --libdir=$OPUS_LIB_DIR \
+    --includedir=$OPUS_LIB_DIR >$LOGS 2>&1
+
+echo "Installing OpusFile (Step 3/7): Installing LibOpus (Step 3/4): Building."
+
+make >$LOGS 2>&1
+
+echo "Installing OpusFile (Step 3/7): Installing LibOpus (Step 4/4): Installing."
+
+make install >$LOGS 2>&1
+
+echo "Installing OpusFile (Step 4/7): Downloading OpusFile."
+
+wget $OPUSFILE_DOWNLOAD_URL -O /tmp/opusfile.tar.gz >$LOGS 2>&1
+tar -xf /tmp/opusfile.tar.gz -C /tmp
+
+echo "Installing OpusFile (Step 5/7): Configuring OpusFile."
+
+cd /tmp/opusfile-0.9
+
+./configure --enable-static \
+    --enable-shared=no \
+    --prefix=$OPUSFILE_LIB_DIR \
+    --libdir=$OPUSFILE_LIB_DIR \
+    --includedir=$OPUSFILE_LIB_DIR >$LOGS 2>&1
+
+echo "Installing OpusFile (Step 6/7): Building OpusFile."
+
+make >$LOGS 2>&1
+
+echo "Installing OpusFile (Step 7/7): Installing OpusFile and cleaning up."
+
+make install >$LOGS 2>&1
+
+cp $OPUS_LIB_DIR/opus/* $OPUS_LIB_DIR
+rm -r $OPUS_LIB_DIR/pkgconfig \
+    $OPUS_LIB_DIR/share \
+    $URL_LIB_DIR \
+    $OGG_LIB_DIR/share \
+    $OGG_LIB_DIR/pkgconfig \
+    $OGG_LIB_DIR/libogg.la
