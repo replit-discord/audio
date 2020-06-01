@@ -10,12 +10,12 @@ OPUS_LIBS="$CWD/opus/lib"
 URL_LIB_DIR="$CWD/opus/lib/url"
 OPUS_LIB_DIR="$CWD/opus/lib"
 OPUSFILE_LIB_DIR="$CWD/opus/lib/opusfile"
-# LIBOPUSENC_CFLAGS="$CWD/opus/lib/opusfile"
-# LIBOPUSENC_LIBS="$CWD/opus/lib/opusfile"
-# FLAC_CFLAGS="$CWD/opus/lib/opusfile"
-# FLAC_LIBS="$CWD/opus/lib/opusfile"
-# DEPS_CFLAGS="-I$OPUS_LIB_DIR/opus -I$OGG_LIB_DIR"
-# DEPS_LIBS="-L$OPUS_LIB_DIR -L$OGG_LIB_DIR -lopus -logg"
+LIBOPUSENC_CFLAGS="$CWD/opus/lib/opusfile"
+LIBOPUSENC_LIBS="$CWD/opus/lib/opusfile"
+FLAC_CFLAGS="$CWD/opus/lib/opusfile"
+FLAC_LIBS="$CWD/opus/lib/opusfile"
+export DEPS_CFLAGS="-I$OPUS_LIB_DIR/opus -I$OGG_LIB_DIR"
+export DEPS_LIBS="-L$OPUS_LIB_DIR -L$OGG_LIB_DIR -lopus -logg -lm"
 URL_DEPS_CFLAGS="-I$URL_LIB_DIR/include"
 URL_DEPS_LIBS="-L$URL_LIB_DIR/lib -lssl -ldl -lcrypto -ldl -pthread"
 OPUS_DOWNLOAD_URL='http://www.mega-nerd.com/SRC/libsamplerate-0.1.9.tar.gz'
@@ -26,20 +26,11 @@ LOGS=/tmp/buildlogs.txt
 
 CHECK_AND_EXIT=""
 
-function clear_logs() {
-    if [ -f $LOGS ]; then
-        cat $LOGS
-        echo >>/tmp/null
-    fi
-    echo >>$LOGS
-}
-
 function print_logs() {
     if [ $? -ne 0 ]; then
         echo "An error occured, logs are below:"
         cat $LOGS
     fi
-    # clear_logs
 }
 
 function print_command() {
@@ -136,6 +127,7 @@ cp $OPUS_LIB_DIR/opus/* $OPUS_LIB_DIR
 
 echo "Done installing OpusFile. Removing unnecessary files."
 
+
 rm -r $OPUS_LIB_DIR/pkgconfig \
     $OPUS_LIB_DIR/share \
     $URL_LIB_DIR \
@@ -143,5 +135,5 @@ rm -r $OPUS_LIB_DIR/pkgconfig \
     $OGG_LIB_DIR/pkgconfig \
     $OGG_LIB_DIR/libogg.la \
     $OPUSFILE_LIB_DIR/share \
-    $OPUSFILE_LIB_DIR/pkgconfig \
-    $(find -type f | grep la)
+    $OPUSFILE_LIB_DIR/pkgconfig
+rm -r $(find $OPUS_LIB_DIR -name "*.la")

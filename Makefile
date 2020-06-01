@@ -5,23 +5,10 @@ OPUS_LIB_DIR="$(CWD)/opus/lib"
 OPUSFILE_LIB_DIR="$(CWD)/opus/lib/opusfile"
 OGG_LIB_DIR="$(CWD)/opus/lib/ogg"
 URL_LIB_DIR="$(CWD)/opus/lib/url"
-export OGG_CFLAGS="$(CWD)/opus/lib/ogg"
-export OGG_LIBS="$(CWD)/opus/lib/ogg"
-export OPUSFILE_CFLAGS="$(CWD)/opus/lib/opusfile"
-export OPUSFILE_LIBS="$(CWD)/opus/lib/opusfile"
-export OPUS_CFLAGS="$(CWD)/opus/lib"
-export OPUS_LIBS="$(CWD)/opus/lib"
-export LIBOPUSENC_CFLAGS="$(CWD)/opus/lib/opusfile"
-export LIBOPUSENC_LIBS="$(CWD)/opus/lib/opusfile" 
-export FLAC_CFLAGS="$(CWD)/opus/lib/opusfile"
-export FLAC_LIBS="$(CWD)/opus/lib/opusfile" 
-export DEPS_CFLAGS=-I$(OPUS_LIB_DIR)/opus -I$(OGG_LIB_DIR)
-export DEPS_LIBS=-L$(OPUS_LIB_DIR) -L$(OGG_LIB_DIR) -lopus -logg
-export URL_DEPS_CFLAGS=-I(URL_LIB_DIR)
-export URL_DEPS_LIBS=-L$(URL_LIB_DIR) -lssl
-
-AUTOMAKE_FLAGS=--enable-static --enable-shared=no --quiet --
 LIBSAMPLERATE_FILES=./gosamplerate/lib/libsamplerate.a ./gosamplerate/lib/samplerate.h
+
+.PHONY: build
+build: $(LIBSAMPLERATE_FILES) ./opus/lib ## Build the required c libraries. This can take a while.
 
 $(LIBSAMPLERATE_FILES): 
 	@echo "Installing libsamplerate"
@@ -31,8 +18,31 @@ $(LIBSAMPLERATE_FILES):
 	@echo "Installing libopus and libopusfile"
 	@./scripts/install_opus
 
+.PHONY: rebuild
+rebuild: clean build ## This may take a while.
+
+.PHONY: rebuild-all
+rebuild-all: clean-all build ## This rebuilds EVERYTHING, and can take quite a while.
+	cd /tmp && rm -r opus-1.3.1 \
+		opusfile-0.9 \
+		opusfile.tar.gz \
+		opus.tar.gz \
+		libogg-1.3.4 \
+		libogg.tar.gz \
+		libsamplerate-0.1.9 \
+		libsamplerate.tar.gz \
+		openssl-1.1.1g \
+		openssl.tar.gz
+
+
+
+.PHONY: clean-all
+clean-all: 
+	rm -r 
+
+.PHONY: clean
 clean: ## Remove c libraries
-	rm -r ./opus/lib ./gosamplerate/lib
+	@-rm -r ./opus/lib ./gosamplerate/lib
 
 audio: ./opus/lib $(LIBSAMPLERATE_FILES) ./* ./*/*
 	go build audio.go
