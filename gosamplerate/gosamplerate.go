@@ -3,8 +3,8 @@ package gosamplerate
 
 /*
 
-#cgo LDFLAGS: -L./lib/lib -lsamplerate -l:libm.a
-#cgo CFLAGS: -I./lib/include
+#cgo LDFLAGS: -static -L./lib/ -lsamplerate -lm
+#cgo CFLAGS: -I./lib/
 
 #include "samplerate.h"
 #include <stdlib.h>
