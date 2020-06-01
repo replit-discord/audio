@@ -31,6 +31,9 @@ $(LIBSAMPLERATE_FILES):
 	@echo "Installing libopus and libopusfile"
 	@./scripts/install_opus
 
+clean: ## Remove c libraries
+	rm -r ./opus/lib ./gosamplerate/lib
+
 audio: ./opus/lib $(LIBSAMPLERATE_FILES) ./* ./*/*
 	go build audio.go
 
