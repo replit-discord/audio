@@ -1,3 +1,3 @@
-module github.com/replit/audio/gosamplerate
+module github.com/AllAwesome497/audio/gosamplerate
 
 go 1.14

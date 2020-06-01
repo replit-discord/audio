@@ -1,3 +1,3 @@
-module github.com/replit/audio/opus
+module github.com/AllAwesome497/audio/opus
 
 go 1.14
