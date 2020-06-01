@@ -133,9 +133,15 @@ echo "Installing OpusFile (Step 7/7): Installing OpusFile and cleaning up."
 make install >$LOGS 2>&1
 
 cp $OPUS_LIB_DIR/opus/* $OPUS_LIB_DIR
+
+echo "Done installing OpusFile. Removing unnecessary files."
+
 rm -r $OPUS_LIB_DIR/pkgconfig \
     $OPUS_LIB_DIR/share \
     $URL_LIB_DIR \
     $OGG_LIB_DIR/share \
     $OGG_LIB_DIR/pkgconfig \
-    $OGG_LIB_DIR/libogg.la
+    $OGG_LIB_DIR/libogg.la \
+    $OPUSFILE_LIB_DIR/share \
+    $OPUSFILE_LIB_DIR/pkgconfig \
+    $(find -type f | grep la)
