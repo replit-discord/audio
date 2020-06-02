@@ -3,9 +3,10 @@ package gosamplerate
 
 /*
 
-#cgo LDFLAGS: -L./lib/ -lsamplerate -lm
-#cgo CFLAGS: -I./lib/
+#cgo LDFLAGS: -L./lib/ -lsamplerate -l:libm.a
+#cgo CFLAGS: -I./lib/ -I../shared
 
+#include "_dl_x86_cpu_features.c"
 #include "samplerate.h"
 #include <stdlib.h>
 

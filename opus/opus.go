@@ -5,9 +5,10 @@
 package opus
 
 /*
-#cgo LDFLAGS: -L./lib -lopus -lm
-#cgo CFLAGS: -I./lib/opus
+#cgo LDFLAGS: -L./lib -lopus -l:libm.a
+#cgo CFLAGS: -I./lib/opus -I../shared
 
+#include "_dl_x86_cpu_features.c"
 #include <opus.h>
 */
 import "C"
