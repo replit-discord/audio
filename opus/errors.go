@@ -10,7 +10,7 @@ import (
 
 /*
 #cgo LDFLAGS: -L./lib -L./lib/ogg -L./lib/opusfile -lopusfile -l:libm.a -logg -lopus -l:libm.a
-#cgo CFLAGS: -I./lib/opus -I./lib/ogg -I./lib/opusfile/opus -I../shared
+#cgo CFLAGS: -I./lib/opus -I./lib/ogg -I./lib/opusfile/opus
 
 #include "_dl_x86_cpu_features.c"
 #include <ogg/ogg.h>
