@@ -24,7 +24,6 @@ import "C"
 import (
 	"errors"
 	"fmt"
-	"log"
 	"math"
 )
 
@@ -165,11 +164,6 @@ func Simple(dataIn []float32, ratio float64, channels int, converterType int) ([
 
 	output := make([]float32, 0, srcData.output_frames_gen)
 
-	// fmt.Println("channels:", src.channels)
-	// fmt.Println("input frames", cSrcData.input_frames)
-	// fmt.Println("input used", cSrcData.input_frames_used)
-	// fmt.Println("output generated", cSrcData.output_frames_gen)
-
 	for i := 0; i < int(srcData.output_frames_gen*C.long(channels)); i++ {
 		output = append(output, float32(outputBuffer[i]))
 	}
@@ -215,8 +209,6 @@ func (src *Src) Process(dataIn []float32, ratio float64, endOfInput bool) ([]flo
 	// fmt.Println("input frames", cSrcData.input_frames)
 	// fmt.Println("input used", cSrcData.input_frames_used)
 	// fmt.Println("output generated", cSrcData.output_frames_gen)
-
-	log.Print(src.srcData.output_frames_gen, " channels ", src.channels)
 
 	for i := 0; i < int(src.srcData.output_frames_gen*src.channels); i++ {
 		output = append(output, float32(src.outputBuffer[i]))

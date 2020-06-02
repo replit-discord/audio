@@ -43,10 +43,9 @@ clean-all: clean
 clean: ## Remove c libraries
 	-@rm -r ./opus/lib ./gosamplerate/lib >> /dev/null 2>&1
 
-test: ## As this is just intended to be the go bindings bundled with static executables this just tests if they're static.
-	@./scripts/test
-
-
+.PHONY: test
+test: $(OPUS_FILES) $(LIBSAMPLERATE_FILES) ## As this is just intended to be the go bindings bundled with static executables this just tests if they're static.
+	@cd tests && go run main.go
 
 .PHONY: check
 check: main
