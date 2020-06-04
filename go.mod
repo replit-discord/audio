@@ -1,3 +1,3 @@
-module github.com/AllAwesome497/audio
+module github.com/repl-it-discord/audio
 
 go 1.14
