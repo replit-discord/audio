@@ -1,0 +1,4 @@
+*.a linguist-detectable=false
+*.go linguist-detectable=false
+*.h linguist-detectable=false
+*.c linguist-detectable=false
